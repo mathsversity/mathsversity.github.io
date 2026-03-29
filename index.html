@@ -313,14 +313,17 @@
 
 <footer>
   © 2026 Pyversity Educare Private Limited &nbsp;|&nbsp;
-  <a href="mailto:mathsversityinfo@gmail.com">mathsversityinfo@gmail.com</a>
+  <a href="/cdn-cgi/l/email-protection#bdd0dcc9d5cecbd8cfced4c9c4d4d3dbd2fddad0dcd4d193ded2d0"><span class="__cf_email__" data-cfemail="1d707c69756e6b786f6e74696474737b725d7a707c7471337e7270">[email&#160;protected]</span></a>
 </footer>
 
-<script>
-  /* ── Countdown: target 24h from page load ── */
-  const target = Date.now() + 2 * 60 * 60 * 1000;
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+  /* ── Countdown: absolute fixed end time ──
+     Edit TARGET_TIME below to set when the site comes back.
+     Format: 'YYYY-MM-DDTHH:MM:SS+05:30'  (IST = UTC+5:30)       */
+  const TARGET_TIME = new Date('2026-04-05T10:00:00+05:30').getTime();
+
   function tick() {
-    const left = Math.max(0, target - Date.now());
+    const left = Math.max(0, TARGET_TIME - Date.now());
     const h = Math.floor(left / 3600000);
     const m = Math.floor((left % 3600000) / 60000);
     const s = Math.floor((left % 60000) / 1000);
@@ -489,14 +492,3 @@
             : pct >= 50
             ? 'Not bad! Keep practising and you\'ll be unstoppable. See you when we\'re back! 💪'
             : 'Hey, you showed up — and that counts! Mathsversity will help you level up soon. 😊'}
-        </p>
-        <button class="next-btn show" style="display:block;margin-top:8px" onclick="restartQuiz()">🔁 Play Again</button>
-      </div>`;
-  }
-
-  function restartQuiz() { idx = 0; score = 0; loadPuzzle(); }
-
-  loadPuzzle();
-</script>
-</body>
-</html>
