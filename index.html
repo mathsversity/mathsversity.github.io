@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Mathsversity – Back Soon!</title>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --bg: #0d0f1a;
+      --surface: #151829;
+      --border: #1e2340;
+      --primary: #6c63ff;
+      --primary-glow: rgba(108,99,255,0.25);
+      --accent: #00d4aa;
+      --accent-glow: rgba(0,212,170,0.2);
+      --text: #e8eaf6;
+      --muted: #8892b0;
+      --card: #11142a;
+      --correct: #00d4aa;
+      --wrong: #ff6b6b;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Space Grotesk', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      overflow-x: hidden;
+    }
+
+    /* ── animated starfield ── */
+    .stars {
+      position: fixed; inset: 0; pointer-events: none; z-index: 0;
+      background:
+        radial-gradient(1px 1px at 10% 20%, rgba(255,255,255,.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 40% 70%, rgba(255,255,255,.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 70% 10%, rgba(255,255,255,.6) 0%, transparent 100%),
+        radial-gradient(1px 1px at 85% 55%, rgba(255,255,255,.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 20% 85%, rgba(255,255,255,.5) 0%, transparent 100%),
+        radial-gradient(1px 1px at 55% 40%, rgba(255,255,255,.4) 0%, transparent 100%),
+        radial-gradient(1px 1px at 90% 80%, rgba(255,255,255,.3) 0%, transparent 100%),
+        radial-gradient(1px 1px at 30% 50%, rgba(255,255,255,.5) 0%, transparent 100%);
+    }
+
+    /* ── purple glow blob ── */
+    .blob {
+      position: fixed; width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(108,99,255,0.12) 0%, transparent 70%);
+      top: -150px; left: 50%; transform: translateX(-50%);
+      pointer-events: none; z-index: 0;
+      animation: blobPulse 6s ease-in-out infinite;
+    }
+    @keyframes blobPulse {
+      0%,100% { transform: translateX(-50%) scale(1); opacity: .7; }
+      50% { transform: translateX(-50%) scale(1.15); opacity: 1; }
+    }
+
+    /* ── header ── */
+    header {
+      position: relative; z-index: 10;
+      width: 100%; padding: 20px 40px;
+      display: flex; align-items: center; gap: 12px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(13,15,26,.8);
+      backdrop-filter: blur(12px);
+    }
+    header .logo-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      background: var(--primary);
+      box-shadow: 0 0 10px var(--primary);
+      animation: blink 2s ease-in-out infinite;
+    }
+    @keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+    header span { font-weight: 700; font-size: 1.2rem; letter-spacing: .5px; }
+    header span em { color: var(--primary); font-style: normal; }
+
+    /* ── main ── */
+    main {
+      position: relative; z-index: 5;
+      width: 100%; max-width: 820px;
+      padding: 60px 24px 40px;
+      display: flex; flex-direction: column; align-items: center; gap: 40px;
+      text-align: center;
+    }
+
+    /* ── hero ── */
+    .badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 6px 16px; border-radius: 100px;
+      border: 1px solid rgba(108,99,255,.4);
+      background: rgba(108,99,255,.08);
+      font-size: .8rem; color: var(--primary); font-weight: 600;
+      letter-spacing: .5px;
+    }
+    .badge .dot { width:7px;height:7px;border-radius:50%;background:var(--primary);animation:blink 1.5s infinite; }
+
+    h1 {
+      font-size: clamp(2rem, 6vw, 3.4rem);
+      font-weight: 700; line-height: 1.1;
+      background: linear-gradient(135deg, #fff 30%, var(--primary) 100%);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .funny {
+      font-size: 1.05rem; color: var(--muted); max-width: 560px;
+      line-height: 1.7;
+    }
+    .funny strong { color: var(--accent); }
+
+    /* ── countdown ── */
+    .countdown-label {
+      font-size: .75rem; color: var(--muted); letter-spacing: 2px;
+      text-transform: uppercase; font-family: 'JetBrains Mono', monospace;
+    }
+    .countdown {
+      display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;
+    }
+    .time-box {
+      background: var(--surface); border: 1px solid var(--border);
+      border-radius: 14px; padding: 14px 22px;
+      display: flex; flex-direction: column; align-items: center; gap: 4px;
+      min-width: 72px;
+    }
+    .time-box .num {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 2rem; font-weight: 700; color: var(--primary);
+      line-height: 1;
+    }
+    .time-box .unit { font-size: .68rem; color: var(--muted); letter-spacing: 1px; text-transform: uppercase; }
+
+    /* ── divider ── */
+    .divider {
+      width: 100%; display: flex; align-items: center; gap: 16px;
+      color: var(--muted); font-size: .8rem; letter-spacing: 1px;
+    }
+    .divider::before,.divider::after { content:''; flex:1; height:1px; background:var(--border); }
+
+    /* ── puzzle card ── */
+    .puzzle-card {
+      width: 100%;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px;
+      display: flex; flex-direction: column; gap: 20px;
+      position: relative; overflow: hidden;
+    }
+    .puzzle-card::before {
+      content:'';position:absolute;top:0;left:0;right:0;height:2px;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+    .puzzle-header {
+      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;
+    }
+    .puzzle-tag {
+      font-size: .72rem; font-weight: 700; letter-spacing: 1.5px;
+      text-transform: uppercase; color: var(--accent);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .puzzle-score {
+      font-size: .8rem; color: var(--muted);
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .puzzle-score span { color: var(--primary); font-weight: 700; }
+    .puzzle-q {
+      font-size: 1.35rem; font-weight: 600; line-height: 1.5;
+      color: var(--text);
+    }
+    .puzzle-hint {
+      font-size: .82rem; color: var(--muted); font-style: italic;
+    }
+
+    /* options */
+    .options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .option-btn {
+      background: var(--surface); border: 1.5px solid var(--border);
+      color: var(--text); border-radius: 12px; padding: 14px 16px;
+      font-family: 'JetBrains Mono', monospace; font-size: .95rem;
+      cursor: pointer; transition: border-color .2s, background .2s, transform .1s;
+      text-align: left;
+    }
+    .option-btn:hover:not(:disabled) {
+      border-color: var(--primary); background: var(--primary-glow);
+      transform: translateY(-1px);
+    }
+    .option-btn.correct { border-color: var(--correct); background: rgba(0,212,170,.12); color: var(--correct); }
+    .option-btn.wrong   { border-color: var(--wrong);   background: rgba(255,107,107,.1);  color: var(--wrong);   }
+    .option-btn:disabled { cursor: default; transform: none; }
+
+    /* open answer */
+    .open-row { display: flex; gap: 10px; }
+    .open-input {
+      flex:1; background: var(--surface); border: 1.5px solid var(--border);
+      color: var(--text); border-radius: 12px; padding: 12px 16px;
+      font-family: 'JetBrains Mono', monospace; font-size: 1rem;
+      outline: none; transition: border-color .2s;
+    }
+    .open-input:focus { border-color: var(--primary); }
+    .open-input.correct { border-color: var(--correct); }
+    .open-input.wrong   { border-color: var(--wrong); }
+    .submit-btn {
+      background: var(--primary); color: #fff;
+      border: none; border-radius: 12px; padding: 12px 20px;
+      font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: .9rem;
+      cursor: pointer; transition: opacity .2s, transform .1s;
+    }
+    .submit-btn:hover { opacity:.85; transform: translateY(-1px); }
+    .submit-btn:disabled { opacity:.4; cursor:default; }
+
+    /* feedback */
+    .feedback {
+      font-size: .9rem; font-weight: 600; padding: 10px 14px;
+      border-radius: 10px; display: none;
+    }
+    .feedback.show { display: block; }
+    .feedback.correct { background: rgba(0,212,170,.12); color: var(--correct); border: 1px solid rgba(0,212,170,.3); }
+    .feedback.wrong   { background: rgba(255,107,107,.1);  color: var(--wrong);   border: 1px solid rgba(255,107,107,.3); }
+
+    /* next */
+    .next-btn {
+      align-self: flex-end;
+      background: linear-gradient(135deg, var(--primary), #8b5cf6);
+      color: #fff; border: none; border-radius: 12px;
+      padding: 12px 28px; font-family: 'Space Grotesk', sans-serif;
+      font-weight: 700; font-size: .95rem; cursor: pointer;
+      display: none; transition: opacity .2s, transform .15s;
+      box-shadow: 0 4px 24px var(--primary-glow);
+    }
+    .next-btn.show { display: block; }
+    .next-btn:hover { opacity:.9; transform: translateY(-2px); }
+
+    /* ── footer ── */
+    footer {
+      position: relative; z-index: 5;
+      padding: 24px; text-align: center;
+      font-size: .78rem; color: var(--muted);
+      border-top: 1px solid var(--border); width: 100%;
+    }
+    footer a { color: var(--primary); text-decoration: none; }
+
+    @media (max-width:480px) {
+      .options { grid-template-columns: 1fr; }
+      .open-row { flex-direction: column; }
+      header { padding: 16px 20px; }
+      main { padding: 40px 16px 30px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="stars"></div>
+<div class="blob"></div>
+
+<header>
+  <div class="logo-dot"></div>
+  <span><em>Maths</em>versity</span>
+</header>
+
+<main>
+  <!-- badge -->
+  <div class="badge"><span class="dot"></span> MAINTENANCE MODE</div>
+
+  <!-- hero -->
+  <h1>We're Busy Doing<br/>Some Math 🧮</h1>
+
+  <p class="funny">
+    Our servers are solving a <strong>very complicated integral</strong> right now —
+    even <strong>Ramanujan</strong> would need a chai break for this one. ☕
+    We promise we're almost done — and unlike your board exam results, the wait won't be <em>that</em> long.
+  </p>
+
+  <!-- countdown -->
+  <p class="countdown-label">⏱ Estimated return in</p>
+  <div class="countdown">
+    <div class="time-box"><span class="num" id="hh">00</span><span class="unit">Hours</span></div>
+    <div class="time-box"><span class="num" id="mm">00</span><span class="unit">Mins</span></div>
+    <div class="time-box"><span class="num" id="ss">00</span><span class="unit">Secs</span></div>
+  </div>
+
+  <div class="divider">WHILE YOU WAIT, PUZZLE TIME!</div>
+
+  <!-- puzzle card -->
+  <div class="puzzle-card">
+    <div class="puzzle-header">
+      <span class="puzzle-tag" id="pTag">🔢 Number</span>
+      <span class="puzzle-score">Score: <span id="scoreVal">0</span> &nbsp;|&nbsp; Q <span id="qNum">1</span>/10</span>
+    </div>
+    <p class="puzzle-q" id="pQ">Loading puzzle…</p>
+    <p class="puzzle-hint" id="pHint"></p>
+
+    <!-- MCQ -->
+    <div class="options" id="optionsGrid"></div>
+
+    <!-- Open answer -->
+    <div class="open-row" id="openRow" style="display:none">
+      <input class="open-input" id="openInput" type="text" placeholder="Type your answer…"/>
+      <button class="submit-btn" id="submitBtn" onclick="checkOpen()">Check</button>
+    </div>
+
+    <div class="feedback" id="feedback"></div>
+    <button class="next-btn" id="nextBtn" onclick="nextPuzzle()">Next Puzzle →</button>
+  </div>
+
+</main>
+
+<footer>
+  © 2026 Pyversity Educare Private Limited &nbsp;|&nbsp;
+  <a href="mailto:mathsversityinfo@gmail.com">mathsversityinfo@gmail.com</a>
+</footer>
+
+<script>
+  /* ── Countdown: target 24h from page load ── */
+  const target = Date.now() + 24 * 60 * 60 * 1000;
+  function tick() {
+    const left = Math.max(0, target - Date.now());
+    const h = Math.floor(left / 3600000);
+    const m = Math.floor((left % 3600000) / 60000);
+    const s = Math.floor((left % 60000) / 1000);
+    document.getElementById('hh').textContent = String(h).padStart(2,'0');
+    document.getElementById('mm').textContent = String(m).padStart(2,'0');
+    document.getElementById('ss').textContent = String(s).padStart(2,'0');
+  }
+  tick(); setInterval(tick, 1000);
+
+  /* ── Puzzles ── */
+  const puzzles = [
+    { tag:'🔢 Number', q:'What is the smallest prime number?', type:'mcq',
+      opts:['1','2','3','5'], answer:'2',
+      hint:'Hint: it\'s even — but it\'s the ONLY even prime!',
+      explain:'2 is the only even prime. 1 is not prime by definition.' },
+
+    { tag:'➕ Arithmetic', q:'What is 17 × 13?', type:'open', answer:'221',
+      hint:'Hint: try breaking it — 17×10 + 17×3',
+      explain:'17×10 = 170, 17×3 = 51 → 170 + 51 = 221' },
+
+    { tag:'🔷 Algebra', q:'If 3x + 7 = 22, what is x?', type:'mcq',
+      opts:['3','5','7','9'], answer:'5',
+      hint:'Hint: subtract 7 from both sides first.',
+      explain:'3x = 15 → x = 5' },
+
+    { tag:'📐 Geometry', q:'How many degrees are in the interior angles of a triangle?', type:'open', answer:'180',
+      hint:'Think of a flat triangle lying on a table.',
+      explain:'The interior angles of any triangle always sum to 180°.' },
+
+    { tag:'🔢 Number', q:'Which of these is NOT a perfect square?', type:'mcq',
+      opts:['36','49','50','64'], answer:'50',
+      hint:'Perfect squares: 1,4,9,16,25,36,49,64…',
+      explain:'√50 ≈ 7.07, so 50 is not a perfect square.' },
+
+    { tag:'➗ Division', q:'What is the remainder when 100 is divided by 7?', type:'open', answer:'2',
+      hint:'7 × 14 = 98. So 100 − 98 = ?',
+      explain:'7 × 14 = 98, 100 − 98 = 2. Remainder = 2.' },
+
+    { tag:'🧩 Logic', q:'A number is doubled, then 6 is subtracted. The result is 18. What\'s the number?', type:'mcq',
+      opts:['9','10','12','6'], answer:'12',
+      hint:'Work backwards: 18+6=24, 24÷2=?',
+      explain:'2n − 6 = 18 → 2n = 24 → n = 12.' },
+
+    { tag:'📊 Fractions', q:'What is ³/₄ + ⅝ expressed as a decimal?', type:'open', answer:'1.375',
+      hint:'Find a common denominator first: 6/8 + 5/8 = ?',
+      explain:'3/4 = 6/8. 6/8 + 5/8 = 11/8 = 1.375' },
+
+    { tag:'🌀 Pattern', q:'What comes next in the sequence? 2, 6, 18, 54, ___', type:'mcq',
+      opts:['108','162','108','216'], answer:'162',
+      hint:'Each term is multiplied by the same number.',
+      explain:'Each term × 3. 54 × 3 = 162.' },
+
+    { tag:'🏆 Bonus', q:'If the area of a square is 144 cm², what is its perimeter?', type:'open', answer:'48',
+      hint:'Find the side length first: √144 = ?',
+      explain:'Side = √144 = 12 cm. Perimeter = 4 × 12 = 48 cm.' },
+  ];
+
+  let idx = 0, score = 0, answered = false;
+
+  function loadPuzzle() {
+    answered = false;
+    const p = puzzles[idx];
+
+    document.getElementById('pTag').textContent = p.tag;
+    document.getElementById('pQ').textContent = p.q;
+    document.getElementById('pHint').textContent = '';
+    document.getElementById('qNum').textContent = idx + 1;
+    document.getElementById('scoreVal').textContent = score;
+
+    const fb = document.getElementById('feedback');
+    fb.textContent = ''; fb.className = 'feedback';
+
+    document.getElementById('nextBtn').className = 'next-btn';
+
+    if (p.type === 'mcq') {
+      document.getElementById('optionsGrid').style.display = 'grid';
+      document.getElementById('openRow').style.display = 'none';
+      renderOptions(p);
+    } else {
+      document.getElementById('optionsGrid').style.display = 'none';
+      document.getElementById('openRow').style.display = 'flex';
+      const inp = document.getElementById('openInput');
+      inp.value = ''; inp.disabled = false;
+      inp.className = 'open-input';
+      document.getElementById('submitBtn').disabled = false;
+      setTimeout(() => inp.focus(), 50);
+    }
+  }
+
+  function renderOptions(p) {
+    const grid = document.getElementById('optionsGrid');
+    grid.innerHTML = '';
+    p.opts.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'option-btn';
+      btn.textContent = opt;
+      btn.onclick = () => checkMCQ(opt, p, btn);
+      grid.appendChild(btn);
+    });
+  }
+
+  function checkMCQ(chosen, p, btn) {
+    if (answered) return;
+    answered = true;
+    const isRight = chosen === p.answer;
+    if (isRight) { score++; btn.classList.add('correct'); }
+    else {
+      btn.classList.add('wrong');
+      document.querySelectorAll('.option-btn').forEach(b => {
+        if (b.textContent === p.answer) b.classList.add('correct');
+      });
+    }
+    document.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
+    showFeedback(isRight, p);
+    document.getElementById('pHint').textContent = '💡 ' + p.explain;
+  }
+
+  function checkOpen() {
+    if (answered) return;
+    const inp = document.getElementById('openInput');
+    const val = inp.value.trim();
+    const p = puzzles[idx];
+    const isRight = val === p.answer;
+    answered = true;
+    inp.disabled = true;
+    document.getElementById('submitBtn').disabled = true;
+    inp.classList.add(isRight ? 'correct' : 'wrong');
+    if (isRight) score++;
+    showFeedback(isRight, p);
+    document.getElementById('pHint').textContent = '💡 ' + p.explain;
+  }
+
+  document.getElementById('openInput').addEventListener('keydown', e => {
+    if (e.key === 'Enter') checkOpen();
+  });
+
+  function showFeedback(isRight, p) {
+    const fb = document.getElementById('feedback');
+    fb.textContent = isRight
+      ? '🎉 Correct! Well done, math wizard!'
+      : `❌ Not quite. The answer is ${p.answer}.`;
+    fb.className = 'feedback show ' + (isRight ? 'correct' : 'wrong');
+    document.getElementById('nextBtn').className = 'next-btn show';
+    document.getElementById('scoreVal').textContent = score;
+  }
+
+  function nextPuzzle() {
+    idx++;
+    if (idx >= puzzles.length) {
+      showFinal(); return;
+    }
+    loadPuzzle();
+  }
+
+  function showFinal() {
+    const card = document.querySelector('.puzzle-card');
+    const pct = Math.round((score / puzzles.length) * 100);
+    let emoji = pct >= 80 ? '🏆' : pct >= 50 ? '👏' : '😅';
+    card.innerHTML = `
+      <div style="text-align:center;padding:20px 0;display:flex;flex-direction:column;gap:16px;align-items:center">
+        <span style="font-size:3.5rem">${emoji}</span>
+        <h2 style="font-size:1.6rem;font-weight:700;color:var(--text)">You scored ${score}/${puzzles.length}!</h2>
+        <p style="color:var(--muted);font-size:1rem;max-width:420px;line-height:1.7">
+          ${pct >= 80
+            ? 'Incredible! You\'re basically a human calculator. Mathsversity will be proud of you when we\'re back! 🚀'
+            : pct >= 50
+            ? 'Not bad! Keep practising and you\'ll be unstoppable. See you when we\'re back! 💪'
+            : 'Hey, you showed up — and that counts! Mathsversity will help you level up soon. 😊'}
+        </p>
+        <button class="next-btn show" style="display:block;margin-top:8px" onclick="restartQuiz()">🔁 Play Again</button>
+      </div>`;
+  }
+
+  function restartQuiz() { idx = 0; score = 0; loadPuzzle(); }
+
+  loadPuzzle();
+</script>
+</body>
+</html>
