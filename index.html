@@ -316,11 +316,13 @@
   <a href="/cdn-cgi/l/email-protection#bdd0dcc9d5cecbd8cfced4c9c4d4d3dbd2fddad0dcd4d193ded2d0"><span class="__cf_email__" data-cfemail="1d707c69756e6b786f6e74696474737b725d7a707c7471337e7270">[email&#160;protected]</span></a>
 </footer>
 
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
-  /* ── Countdown: absolute fixed end time ──
-     Edit TARGET_TIME below to set when the site comes back.
-     Format: 'YYYY-MM-DDTHH:MM:SS+05:30'  (IST = UTC+5:30)       */
-  const TARGET_TIME = new Date('2026-04-05T10:00:00+05:30').getTime();
+
+<script>
+  /* ── Countdown ──────────────────────────────────────────────────
+     Set TARGET_TIME to when the site will be back (IST = UTC+5:30).
+     This is an absolute timestamp — stays the same on every refresh.
+  ──────────────────────────────────────────────────────────────── */
+  const TARGET_TIME = new Date('2026-04-10T10:00:00+05:30').getTime();
 
   function tick() {
     const left = Math.max(0, TARGET_TIME - Date.now());
@@ -331,53 +333,44 @@
     document.getElementById('mm').textContent = String(m).padStart(2,'0');
     document.getElementById('ss').textContent = String(s).padStart(2,'0');
   }
-  tick(); setInterval(tick, 1000);
+  tick();
+  setInterval(tick, 1000);
 
-  /* ── Puzzles ── */
+  /* ── Puzzles ──────────────────────────────────────────────────── */
   const puzzles = [
     { tag:'🔢 Number', q:'What is the smallest prime number?', type:'mcq',
       opts:['1','2','3','5'], answer:'2',
-      hint:'Hint: it\'s even — but it\'s the ONLY even prime!',
       explain:'2 is the only even prime. 1 is not prime by definition.' },
 
     { tag:'➕ Arithmetic', q:'What is 17 × 13?', type:'open', answer:'221',
-      hint:'Hint: try breaking it — 17×10 + 17×3',
       explain:'17×10 = 170, 17×3 = 51 → 170 + 51 = 221' },
 
     { tag:'🔷 Algebra', q:'If 3x + 7 = 22, what is x?', type:'mcq',
       opts:['3','5','7','9'], answer:'5',
-      hint:'Hint: subtract 7 from both sides first.',
-      explain:'3x = 15 → x = 5' },
+      explain:'3x = 22 − 7 = 15 → x = 5' },
 
     { tag:'📐 Geometry', q:'How many degrees are in the interior angles of a triangle?', type:'open', answer:'180',
-      hint:'Think of a flat triangle lying on a table.',
       explain:'The interior angles of any triangle always sum to 180°.' },
 
     { tag:'🔢 Number', q:'Which of these is NOT a perfect square?', type:'mcq',
       opts:['36','49','50','64'], answer:'50',
-      hint:'Perfect squares: 1,4,9,16,25,36,49,64…',
       explain:'√50 ≈ 7.07, so 50 is not a perfect square.' },
 
     { tag:'➗ Division', q:'What is the remainder when 100 is divided by 7?', type:'open', answer:'2',
-      hint:'7 × 14 = 98. So 100 − 98 = ?',
-      explain:'7 × 14 = 98, 100 − 98 = 2. Remainder = 2.' },
+      explain:'7 × 14 = 98. 100 − 98 = 2. Remainder = 2.' },
 
-    { tag:'🧩 Logic', q:'A number is doubled, then 6 is subtracted. The result is 18. What\'s the number?', type:'mcq',
+    { tag:'🧩 Logic', q:'A number is doubled, then 6 is subtracted. The result is 18. What is the number?', type:'mcq',
       opts:['9','10','12','6'], answer:'12',
-      hint:'Work backwards: 18+6=24, 24÷2=?',
       explain:'2n − 6 = 18 → 2n = 24 → n = 12.' },
 
-    { tag:'📊 Fractions', q:'What is ³/₄ + ⅝ expressed as a decimal?', type:'open', answer:'1.375',
-      hint:'Find a common denominator first: 6/8 + 5/8 = ?',
+    { tag:'📊 Fractions', q:'What is 3/4 + 5/8 expressed as a decimal?', type:'open', answer:'1.375',
       explain:'3/4 = 6/8. 6/8 + 5/8 = 11/8 = 1.375' },
 
-    { tag:'🌀 Pattern', q:'What comes next in the sequence? 2, 6, 18, 54, ___', type:'mcq',
-      opts:['108','162','108','216'], answer:'162',
-      hint:'Each term is multiplied by the same number.',
-      explain:'Each term × 3. 54 × 3 = 162.' },
+    { tag:'🌀 Pattern', q:'What comes next? 2, 6, 18, 54, ___', type:'mcq',
+      opts:['108','162','180','216'], answer:'162',
+      explain:'Each term is multiplied by 3. 54 × 3 = 162.' },
 
     { tag:'🏆 Bonus', q:'If the area of a square is 144 cm², what is its perimeter?', type:'open', answer:'48',
-      hint:'Find the side length first: √144 = ?',
       explain:'Side = √144 = 12 cm. Perimeter = 4 × 12 = 48 cm.' },
   ];
 
@@ -394,8 +387,8 @@
     document.getElementById('scoreVal').textContent = score;
 
     const fb = document.getElementById('feedback');
-    fb.textContent = ''; fb.className = 'feedback';
-
+    fb.textContent = '';
+    fb.className = 'feedback';
     document.getElementById('nextBtn').className = 'next-btn';
 
     if (p.type === 'mcq') {
@@ -406,21 +399,22 @@
       document.getElementById('optionsGrid').style.display = 'none';
       document.getElementById('openRow').style.display = 'flex';
       const inp = document.getElementById('openInput');
-      inp.value = ''; inp.disabled = false;
+      inp.value = '';
+      inp.disabled = false;
       inp.className = 'open-input';
       document.getElementById('submitBtn').disabled = false;
-      setTimeout(() => inp.focus(), 50);
+      setTimeout(function() { inp.focus(); }, 50);
     }
   }
 
   function renderOptions(p) {
     const grid = document.getElementById('optionsGrid');
     grid.innerHTML = '';
-    p.opts.forEach(opt => {
+    p.opts.forEach(function(opt) {
       const btn = document.createElement('button');
       btn.className = 'option-btn';
       btn.textContent = opt;
-      btn.onclick = () => checkMCQ(opt, p, btn);
+      btn.onclick = function() { checkMCQ(opt, p, btn); };
       grid.appendChild(btn);
     });
   }
@@ -429,14 +423,16 @@
     if (answered) return;
     answered = true;
     const isRight = chosen === p.answer;
-    if (isRight) { score++; btn.classList.add('correct'); }
-    else {
+    if (isRight) {
+      score++;
+      btn.classList.add('correct');
+    } else {
       btn.classList.add('wrong');
-      document.querySelectorAll('.option-btn').forEach(b => {
+      document.querySelectorAll('.option-btn').forEach(function(b) {
         if (b.textContent === p.answer) b.classList.add('correct');
       });
     }
-    document.querySelectorAll('.option-btn').forEach(b => b.disabled = true);
+    document.querySelectorAll('.option-btn').forEach(function(b) { b.disabled = true; });
     showFeedback(isRight, p);
     document.getElementById('pHint').textContent = '💡 ' + p.explain;
   }
@@ -456,7 +452,7 @@
     document.getElementById('pHint').textContent = '💡 ' + p.explain;
   }
 
-  document.getElementById('openInput').addEventListener('keydown', e => {
+  document.getElementById('openInput').addEventListener('keydown', function(e) {
     if (e.key === 'Enter') checkOpen();
   });
 
@@ -464,7 +460,7 @@
     const fb = document.getElementById('feedback');
     fb.textContent = isRight
       ? '🎉 Correct! Well done, math wizard!'
-      : `❌ Not quite. The answer is ${p.answer}.`;
+      : '❌ Not quite. The answer is ' + p.answer + '.';
     fb.className = 'feedback show ' + (isRight ? 'correct' : 'wrong');
     document.getElementById('nextBtn').className = 'next-btn show';
     document.getElementById('scoreVal').textContent = score;
@@ -472,23 +468,33 @@
 
   function nextPuzzle() {
     idx++;
-    if (idx >= puzzles.length) {
-      showFinal(); return;
-    }
+    if (idx >= puzzles.length) { showFinal(); return; }
     loadPuzzle();
   }
 
   function showFinal() {
     const card = document.querySelector('.puzzle-card');
     const pct = Math.round((score / puzzles.length) * 100);
-    let emoji = pct >= 80 ? '🏆' : pct >= 50 ? '👏' : '😅';
-    card.innerHTML = `
-      <div style="text-align:center;padding:20px 0;display:flex;flex-direction:column;gap:16px;align-items:center">
-        <span style="font-size:3.5rem">${emoji}</span>
-        <h2 style="font-size:1.6rem;font-weight:700;color:var(--text)">You scored ${score}/${puzzles.length}!</h2>
-        <p style="color:var(--muted);font-size:1rem;max-width:420px;line-height:1.7">
-          ${pct >= 80
-            ? 'Incredible! You\'re basically a human calculator. Mathsversity will be proud of you when we\'re back! 🚀'
-            : pct >= 50
-            ? 'Not bad! Keep practising and you\'ll be unstoppable. See you when we\'re back! 💪'
-            : 'Hey, you showed up — and that counts! Mathsversity will help you level up soon. 😊'}
+    const emoji = pct >= 80 ? '🏆' : pct >= 50 ? '👏' : '😅';
+    const msg = pct >= 80
+      ? 'Incredible! You are basically a human calculator. Mathsversity will be proud of you when we are back! 🚀'
+      : pct >= 50
+      ? 'Not bad! Keep practising and you will be unstoppable. See you when we are back! 💪'
+      : 'Hey, you showed up — and that counts! Mathsversity will help you level up soon. 😊';
+    card.innerHTML =
+      '<div style="text-align:center;padding:20px 0;display:flex;flex-direction:column;gap:16px;align-items:center">' +
+      '<span style="font-size:3.5rem">' + emoji + '</span>' +
+      '<h2 style="font-size:1.6rem;font-weight:700;color:var(--text)">You scored ' + score + '/' + puzzles.length + '!</h2>' +
+      '<p style="color:var(--muted);font-size:1rem;max-width:420px;line-height:1.7">' + msg + '</p>' +
+      '<button class="next-btn show" style="display:block;margin-top:8px" onclick="restartQuiz()">🔁 Play Again</button>' +
+      '</div>';
+  }
+
+  function restartQuiz() { idx = 0; score = 0; loadPuzzle(); }
+
+  window.addEventListener('DOMContentLoaded', function() {
+    loadPuzzle();
+  });
+</script>
+</body>
+</html>
